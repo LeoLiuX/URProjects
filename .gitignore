@@ -1,0 +1,22 @@
+##########################
+# Unreal Generated Files #
+##########################
+*/Build
+*/Binaries
+*/DerivedDataCache
+*/Intermediate
+*/Saved
+
+# Built data for maps
+*_BuiltData.uasset
+
+######################
+# VS Generated Files #
+######################
+*.VC.db
+
+####################
+# Project Specific #
+####################
+TheHouse/Content/StarterContent/
+TheHouse/.vs/
