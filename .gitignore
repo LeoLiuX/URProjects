@@ -18,5 +18,5 @@
 ####################
 # Project Specific #
 ####################
-TheHouse/Content/StarterContent/
-TheHouse/.vs/
+*/Content/StarterContent/
+*/.vs/
