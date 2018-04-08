@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "../CommonHeaders.h"
-
+#include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
 
@@ -34,11 +33,17 @@ private:
 	float			m_DefaultAngle;
 	int				m_State;
 
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY(EditAnywhere)
 	float			m_DoorRotatorAngle = 60.0f;
+
+	//UPROPERTY(EditAnywhere)
+	ATriggerVolume* m_PressurePlate;
+
+	UPROPERTY(EditAnywhere)
+	AActor*			m_UserPawn;
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	bool		 SetOpenDoor(bool bShouldOpen);
 };

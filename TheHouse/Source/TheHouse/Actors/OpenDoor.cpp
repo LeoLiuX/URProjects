@@ -3,6 +3,7 @@
 #include "OpenDoor.h"
 #include "GameFramework/Actor.h"
 
+
 static constexpr float s_OpenDoorTime = 1.618f * 2.0f;
 
 // Sets default values for this component's properties
@@ -17,18 +18,22 @@ UOpenDoor::UOpenDoor()
 
 
 // Called when the game starts
-void UOpenDoor::BeginPlay()
+void 
+UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	m_DefaultAngle = GetOwner()->GetActorRotation().Yaw;
-	SetState(DOOR_OPEN);
+	m_UserPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 
 // Called every frame
-void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void
+UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	SetOpenDoor(m_PressurePlate->IsOverlappingActor(m_UserPawn));
 
 	switch (m_State)
 	{
@@ -38,7 +43,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 			currentRotator.Yaw -= m_DoorRotatorAngle * DeltaTime / s_OpenDoorTime;
 			if (m_DefaultAngle - m_DoorRotatorAngle > currentRotator.Yaw) {
 				currentRotator.Yaw = m_DefaultAngle - m_DoorRotatorAngle;
-				SetState(DOOR_CLOSE);
+				SetState(NONE);
 			}
 			GetOwner()->SetActorRotation(currentRotator);
 		}
@@ -50,7 +55,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 			currentRotator.Yaw += m_DoorRotatorAngle * DeltaTime / s_OpenDoorTime;
 			if (m_DefaultAngle < currentRotator.Yaw) {
 				currentRotator.Yaw = m_DefaultAngle;
-				SetState(DOOR_OPEN);
+				SetState(NONE);
 			}
 			GetOwner()->SetActorRotation(currentRotator);
 		}
@@ -63,7 +68,8 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 }
 
-void UOpenDoor::SetState(int state) {
+void
+UOpenDoor::SetState(int state) {
 	switch (state)
 	{
 	case NONE:
@@ -71,4 +77,13 @@ void UOpenDoor::SetState(int state) {
 		break;
 	}
 	m_State = state;
+}
+
+bool
+UOpenDoor::SetOpenDoor(bool bShouldOpen) {
+	if (m_State != NONE) {
+		return false;
+	}
+	SetState(bShouldOpen ? DOOR_OPEN : DOOR_CLOSE);
+	return true;
 }
